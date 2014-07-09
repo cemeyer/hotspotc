@@ -17,19 +17,13 @@ Root is needed to start and stop hotspots.
 
 To start a hotspot:
 ```
-./hotspotc start
+./hotspotc
 ```
 
-To stop the hotspot:
-```
-./hotspotc stop
-```
+To stop the hotspot: Ctrl-c.
 
-The first time you run `hotspotc`, it will ask you for configuration values for
-SSID, password, etc. Alternatively, you may run:
-```
-./hotspotc configure
-```
+When you run `hotspotc`, it will ask you for configuration values for SSID,
+password, etc.
 
 #Testing status
 
