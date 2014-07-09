@@ -386,7 +386,7 @@ stop(void)
 static int __must_check
 start(void)
 {
-	char dhcpl[80], dhcph[80], *s, unused[1];
+	char dhcpl[80], dhcph[80], *s, unused[10];
 	int rc;
 
 	rc = xsystem("ifconfig %s up %s netmask 255.255.255.0", g_wlan_nam, g_ipstr);
@@ -409,7 +409,7 @@ start(void)
 	       g_wlan_nam,
 	       g_wlan_nam);
 
-	ASSERT(GETSTR("Added?", unused));
+	ASSERT(GETSTR("Added?", unused) == 0);
 
 	/* Hack. Use GW subnet, from .20 -> .100 */
 	strcpy(dhcpl, g_ipstr);
@@ -425,9 +425,13 @@ start(void)
 
 	strcpy(s + 1, "100");
 
+	/*
+	 * Doesn't work if dnsmasq is already running at all, even with the
+	 * other one in interface-binding (vs hogging) mode. Oh well.
+	 */
 	rc = xsystem("dnsmasq --conf-file=/dev/null --dhcp-authoritative "
-	    "--interface=%s --dhcp-range=%s,%s,255.255.255.0,4h", g_wlan_nam,
-	    dhcpl, dhcph);
+	    "--interface=%s --dhcp-range=%s,%s,255.255.255.0,4h "
+	    "--bind-interfaces", g_wlan_nam, dhcpl, dhcph);
 	if (rc) {
 		fprintf(stderr, "dnsmasq: %d\n", rc);
 		exit(EX_SOFTWARE);
